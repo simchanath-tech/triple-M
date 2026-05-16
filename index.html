@@ -1,0 +1,370 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Beta Mode: Triple-M Syndrome Risk Calculator</title>
+    <style>
+        :root {
+            --primary-color: #2c3e50;
+            --low-risk: #2e7d32;
+            --int-risk: #ef6c00;
+            --high-risk: #c62828;
+            --bg-color: #f8f9fa;
+        }
+
+        body {
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            background-color: var(--bg-color);
+            color: #333;
+            line-height: 1.5;
+            padding: 20px;
+            margin: 0;
+        }
+
+        .container {
+            max-width: 650px;
+            margin: 40px auto;
+            background: #ffffff;
+            padding: 30px;
+            border-radius: 12px;
+            box-shadow: 0 4px 15px rgba(0, 0, 0, 0.05);
+        }
+
+        .header-block {
+            border-bottom: 2px solid #edf2f7;
+            padding-bottom: 15px;
+            margin-bottom: 25px;
+        }
+
+        h2 {
+            color: var(--primary-color);
+            margin: 0 0 5px 0;
+            font-size: 24px;
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+
+        .beta-tag {
+            background: #e53e3e;
+            color: white;
+            font-size: 11px;
+            text-transform: uppercase;
+            padding: 2px 8px;
+            border-radius: 4px;
+            letter-spacing: 0.5px;
+            font-weight: bold;
+        }
+
+        .header-sub {
+            font-size: 14px;
+            color: #4a5568;
+            margin: 0;
+            font-weight: 500;
+        }
+
+        .symptom-group {
+            margin: 20px 0;
+        }
+
+        .symptom-row {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+            padding: 12px 15px;
+            margin-bottom: 8px;
+            background: #fdfdfd;
+            border: 1px solid #e2e8f0;
+            border-radius: 8px;
+            transition: background 0.2s;
+        }
+
+        .symptom-row:hover {
+            background: #f7fafc;
+        }
+
+        .symptom-label {
+            display: flex;
+            flex-direction: column;
+            flex: 1;
+            padding-right: 15px;
+        }
+
+        .symptom-title {
+            font-weight: 600;
+            color: #2d3748;
+        }
+
+        .symptom-desc {
+            font-size: 13px;
+            color: #718096;
+            margin-top: 2px;
+        }
+
+        .badge {
+            background: #e2e8f0;
+            color: #4a5568;
+            padding: 4px 8px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: bold;
+            margin-right: 15px;
+            white-space: nowrap;
+        }
+
+        /* Switch Styling */
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 46px;
+            height: 24px;
+        }
+
+        .switch input { 
+            opacity: 0;
+            width: 0;
+            height: 0;
+        }
+
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0; left: 0; right: 0; bottom: 0;
+            background-color: #cbd5e0;
+            transition: .3s;
+            border-radius: 24px;
+        }
+
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 18px;
+            width: 18px;
+            left: 3px;
+            bottom: 3px;
+            background-color: white;
+            transition: .3s;
+            border-radius: 50%;
+        }
+
+        input:checked + .slider {
+            background-color: var(--primary-color);
+        }
+
+        input:checked + .slider:before {
+            transform: translateX(22px);
+        }
+
+        /* Result Panel Box */
+        .result-panel {
+            margin-top: 30px;
+            padding: 20px;
+            border-radius: 8px;
+            background: #edf2f7;
+            border-left: 6px solid #cbd5e0;
+        }
+
+        .score-display {
+            font-size: 20px;
+            font-weight: bold;
+            margin-bottom: 5px;
+        }
+
+        .risk-tier {
+            font-size: 18px;
+            font-weight: bold;
+            margin-bottom: 10px;
+        }
+
+        .action-protocol {
+            font-size: 15px;
+            font-weight: 500;
+        }
+
+        /* Dynamic Border Colors based on Risk Class */
+        .low-risk-border { border-left-color: var(--low-risk); background-color: #f1f8e9; color: #1b5e20; }
+        .int-risk-border { border-left-color: var(--int-risk); background-color: #fff3e0; color: #e65100; }
+        .high-risk-border { border-left-color: var(--high-risk); background-color: #ffebee; color: #b71c1c; }
+    </style>
+</head>
+<body>
+
+<div class="container">
+    <div class="header-block">
+        <h2>Triple-M Syndrome Risk Calculator <span class="beta-tag">Beta Mode</span></h2>
+        <p class="header-sub">For individuals with recent initiation of checkpoint inhibitor use in the past 3 months</p>
+    </div>
+    
+    <div class="symptom-group">
+        <!-- 1 Point Row -->
+        <div class="symptom-row">
+            <div class="symptom-label">
+                <span class="symptom-title">Myalgia OR mild generalized weakness</span>
+            </div>
+            <span class="badge">1 Pt</span>
+            <label class="switch">
+                <input type="checkbox" id="symp_mild" class="calc-trigger" data-points="1" data-name="Myalgia/Mild Weakness">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- 2 Point Rows -->
+        <div class="symptom-row">
+            <div class="symptom-label">
+                <span class="symptom-title">Chest Pain</span>
+                <span class="symptom-desc">Without alternative etiology</span>
+            </div>
+            <span class="badge">2 Pts</span>
+            <label class="switch">
+                <input type="checkbox" id="symp_chest" class="calc-trigger" data-points="2" data-name="Chest Pain">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="symptom-row">
+            <div class="symptom-label">
+                <span class="symptom-title">Shortness of Breath (SOB)</span>
+                <span class="symptom-desc">Without alternative etiology</span>
+            </div>
+            <span class="badge">2 Pts</span>
+            <label class="switch">
+                <input type="checkbox" id="symp_sob" class="calc-trigger" data-points="2" data-name="Shortness of Breath">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- 4 Point Rows -->
+        <div class="symptom-row">
+            <div class="symptom-label">
+                <span class="symptom-title">Severe Generalized Weakness</span>
+                <span class="symptom-desc">Objective proximal muscle weakness (e.g., difficulty rising from chair or lifting arms)</span>
+            </div>
+            <span class="badge">4 Pts</span>
+            <label class="switch">
+                <input type="checkbox" id="symp_severe_weak" class="calc-trigger" data-points="4" data-name="Severe Weakness">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <div class="symptom-row">
+            <div class="symptom-label">
+                <span class="symptom-title">Dysphagia</span>
+                <span class="symptom-desc">Difficulty swallowing</span>
+            </div>
+            <span class="badge">4 Pts</span>
+            <label class="switch">
+                <input type="checkbox" id="symp_dysphagia" class="calc-trigger" data-points="4" data-name="Dysphagia">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- 5 Point Row -->
+        <div class="symptom-row">
+            <div class="symptom-label">
+                <span class="symptom-title">Electrocardiographic (EKG) Abnormalities</span>
+                <span class="symptom-desc">Any baseline abnormality, new arrhythmia, conduction block, or ST/T changes</span>
+            </div>
+            <span class="badge">5 Pts</span>
+            <label class="switch">
+                <input type="checkbox" id="symp_ekg" class="calc-trigger" data-points="5" data-name="EKG Abnormalities">
+                <span class="slider"></span>
+            </label>
+        </div>
+
+        <!-- 6 Point Row -->
+        <div class="symptom-row">
+            <div class="symptom-label">
+                <span class="symptom-title">Ptosis OR Diplopia</span>
+                <span class="symptom-desc">Drooping eyelid or double vision</span>
+            </div>
+            <span class="badge">6 Pts</span>
+            <label class="switch">
+                <input type="checkbox" id="symp_ocular" class="calc-trigger" data-points="6" data-name="Ocular Symptoms">
+                <span class="slider"></span>
+            </label>
+        </div>
+    </div>
+
+    <!-- Output Box Container -->
+    <div id="resultBox" class="result-panel">
+        <div class="score-display">Total Score: <span id="scoreText">0</span></div>
+        <div id="tierText" class="risk-tier">Zero Baseline</div>
+        <div id="protocolText" class="action-protocol">Select checkboxes to calculate patient risk triage status.</div>
+    </div>
+</div>
+
+<script>
+    document.querySelectorAll('.calc-trigger').forEach(item => {
+        item.addEventListener('change', calculateScore);
+    });
+
+    function calculateScore() {
+        let totalScore = 0;
+        let activeSymptoms = [];
+        
+        // Sum weights and capture checked inputs for tracking
+        document.querySelectorAll('.calc-trigger:checked').forEach(checkedItem => {
+            totalScore += parseInt(checkedItem.getAttribute('data-points'));
+            activeSymptoms.push(checkedItem.getAttribute('data-name'));
+        });
+
+        const scoreText = document.getElementById('scoreText');
+        const tierText = document.getElementById('tierText');
+        const protocolText = document.getElementById('protocolText');
+        const resultBox = document.getElementById('resultBox');
+
+        scoreText.innerText = totalScore;
+        resultBox.className = "result-panel";
+
+        let currentTier = "Zero Baseline";
+
+        // Triage mapping evaluation
+        if (totalScore >= 6) {
+            resultBox.classList.add('high-risk-border');
+            currentTier = "High Risk / Presumptive Triple-M Syndrome";
+            protocolText.innerText = "Urgent ER evaluation required. Direct the patient to the nearest emergency department or arrange immediate inpatient transfer.";
+        } else if (totalScore >= 2 && totalScore <= 5) {
+            resultBox.classList.add('int-risk-border');
+            currentTier = "Intermediate Risk";
+            protocolText.innerText = "Recommend checking viral panel, EKG, CPK (creatine phosphokinase), and Troponin.";
+        } else if (totalScore === 1) {
+            resultBox.classList.add('low-risk-border');
+            currentTier = "Low Risk";
+            protocolText.innerText = "Check viral panel to rule out an infectious etiology. Consider checking baseline Troponin and an EKG.";
+        } else {
+            protocolText.innerText = "Select checkboxes to calculate patient risk triage status.";
+        }
+
+        tierText.innerText = currentTier;
+
+        // Internal Tracking Module
+        logCalculatorInteraction(totalScore, currentTier, activeSymptoms);
+    }
+
+    /**
+     * Client-side tracking module
+     */
+    function logCalculatorInteraction(score, tier, symptoms) {
+        const trackingPayload = {
+            timestamp: new Date().toISOString(),
+            calculatedScore: score,
+            riskTier: tier,
+            selectedSymptoms: symptoms,
+            context: "Recent ICI use (< 3 months)"
+        };
+        
+        // Logs directly to the developer environment/browser console
+        console.log("-----------------------------------------");
+        console.log("%c[TRACKER] Calculator Interaction Logged", "color: #2c3e50; font-weight: bold;");
+        console.log("Timestamp:", trackingPayload.timestamp);
+        console.log("Target Cohort:", trackingPayload.context);
+        console.log("Calculated Score:", trackingPayload.calculatedScore);
+        console.log("Assigned Risk Tier:", trackingPayload.riskTier);
+        console.log("Active Presenting Symptoms:", trackingPayload.selectedSymptoms.length > 0 ? trackingPayload.selectedSymptoms.join(', ') : "None");
+        console.log("-----------------------------------------");
+    }
+</script>
+
+</body>
+</html>

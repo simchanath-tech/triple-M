@@ -60,7 +60,17 @@
         .header-sub {
             font-size: 14px;
             color: #4a5568;
-            margin: 0;
+            margin: 0 0 8px 0;
+            font-weight: 500;
+        }
+
+        .disclaimer-box {
+            background-color: #fffaf0;
+            border: 1px dashed #dd6b20;
+            padding: 10px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            color: #dd6b20;
             font-weight: 500;
         }
 
@@ -194,6 +204,9 @@
     <div class="header-block">
         <h2>Triple-M Syndrome Risk Calculator <span class="beta-tag">Beta Mode</span></h2>
         <p class="header-sub">For individuals with recent initiation of checkpoint inhibitor use in the past 3 months</p>
+        <div class="disclaimer-box">
+            <strong>Notice:</strong> For Beta SCC use only. This tool is based entirely on expert opinion and is not evidence-based.
+        </div>
     </div>
     
     <div class="symptom-group">
@@ -322,8 +335,8 @@
         // Triage mapping evaluation
         if (totalScore >= 6) {
             resultBox.classList.add('high-risk-border');
-            currentTier = "High Risk / Presumptive Triple-M Syndrome";
-            protocolText.innerText = "Urgent ER evaluation required. Direct the patient to the nearest emergency department or arrange immediate inpatient transfer.";
+            currentTier = "High Risk for Myocarditis, Myasthenia Gravis, or Combined Overlap Syndrome";
+            protocolText.innerText = "Urgent ER evaluation required. The patient exhibits high-weight features or multi-system symptom combinations carrying immediate risk of sudden heart block, fulminant myocarditis, or acute respiratory failure. Direct to the nearest emergency department or arrange immediate inpatient transfer.";
         } else if (totalScore >= 2 && totalScore <= 5) {
             resultBox.classList.add('int-risk-border');
             currentTier = "Intermediate Risk";
@@ -351,7 +364,8 @@
             calculatedScore: score,
             riskTier: tier,
             selectedSymptoms: symptoms,
-            context: "Recent ICI use (< 3 months)"
+            context: "Recent ICI use (< 3 months)",
+            validation: "Beta SCC / Expert Opinion Only"
         };
         
         // Logs directly to the developer environment/browser console
@@ -359,6 +373,7 @@
         console.log("%c[TRACKER] Calculator Interaction Logged", "color: #2c3e50; font-weight: bold;");
         console.log("Timestamp:", trackingPayload.timestamp);
         console.log("Target Cohort:", trackingPayload.context);
+        console.log("Validation Class:", trackingPayload.validation);
         console.log("Calculated Score:", trackingPayload.calculatedScore);
         console.log("Assigned Risk Tier:", trackingPayload.riskTier);
         console.log("Active Presenting Symptoms:", trackingPayload.selectedSymptoms.length > 0 ? trackingPayload.selectedSymptoms.join(', ') : "None");

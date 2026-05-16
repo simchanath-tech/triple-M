@@ -4,6 +4,21 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Beta Mode: Triple-M Syndrome Risk Calculator</title>
+    
+    <!-- ================================================================= -->
+    <!-- GOOGLE ANALYTICS INTEGRATION (LIVE ID: G-6RV9LJ1T4Z)              -->
+    <!-- ================================================================= -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=G-6RV9LJ1T4Z"></script>
+    <script>
+        window.dataLayer = window.dataLayer || [];
+        function gtag(){dataLayer.push(arguments);}
+        gtag('js', new Date());
+
+        // Configures GA4 and anonymizes IP addresses for privacy compliance
+        gtag('config', 'G-6RV9LJ1T4Z', { 'anonymize_ip': true });
+    </script>
+    <!-- ================================================================= -->
+
     <style>
         :root {
             --primary-color: #2c3e50;
@@ -351,33 +366,28 @@
 
         tierText.innerText = currentTier;
 
-        // Internal Tracking Module
+        // Unified Tracking Engine (Console Log + Google Analytics 4)
         logCalculatorInteraction(totalScore, currentTier, activeSymptoms);
     }
 
     /**
-     * Client-side tracking module
+     * Unified Tracking Engine
      */
     function logCalculatorInteraction(score, tier, symptoms) {
-        const trackingPayload = {
-            timestamp: new Date().toISOString(),
-            calculatedScore: score,
-            riskTier: tier,
-            selectedSymptoms: symptoms,
-            context: "Recent ICI use (< 3 months)",
-            validation: "Beta SCC / Expert Opinion Only"
-        };
-        
-        // Logs directly to the developer environment/browser console
-        console.log("-----------------------------------------");
-        console.log("%c[TRACKER] Calculator Interaction Logged", "color: #2c3e50; font-weight: bold;");
-        console.log("Timestamp:", trackingPayload.timestamp);
-        console.log("Target Cohort:", trackingPayload.context);
-        console.log("Validation Class:", trackingPayload.validation);
-        console.log("Calculated Score:", trackingPayload.calculatedScore);
-        console.log("Assigned Risk Tier:", trackingPayload.riskTier);
-        console.log("Active Presenting Symptoms:", trackingPayload.selectedSymptoms.length > 0 ? trackingPayload.selectedSymptoms.join(', ') : "None");
-        console.log("-----------------------------------------");
+        // 1. Local Dev Console Tracking
+        console.log(`[TRACKER] Interaction Logged - Score: ${score}, Tier: ${tier}`);
+
+        // 2. Google Analytics 4 (GA4) Event Payload
+        if (typeof gtag === 'function') {
+            gtag('event', 'calculator_score_generated', {
+                'event_category': 'Clinical Tool Usage',
+                'calculated_score': score,
+                'risk_tier': tier,
+                'symptoms_selected_count': symptoms.length,
+                'cohort_context': 'Recent ICI use (< 3 months)',
+                'validation_status': 'Beta SCC / Expert Opinion Only'
+            });
+        }
     }
 </script>
 

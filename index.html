@@ -107,8 +107,8 @@
             display: flex;
             align-items: center;
             justify-content: space-between;
-            padding: 12px 15px;
-            margin-bottom: 8px;
+            padding: 15px;
+            margin-bottom: 10px;
             background: #fdfdfd;
             border: 1px solid #e2e8f0;
             border-radius: 8px;
@@ -143,77 +143,51 @@
             white-space: nowrap;
         }
 
-        /* Switch Styling */
-        .switch {
-            position: relative;
-            display: inline-block;
-            width: 46px;
-            height: 24px;
+        /* Segmented Button Selection Controls */
+        .btn-group {
+            display: flex;
+            background: #edf2f7;
+            padding: 2px;
+            border-radius: 6px;
+            border: 1px solid #cbd5e0;
         }
 
-        .switch input { 
-            opacity: 0;
-            width: 0;
-            height: 0;
+        .btn-group input[type="radio"] {
+            display: none;
         }
 
-        .slider {
-            position: absolute;
+        .btn-group label {
+            padding: 6px 14px;
+            font-size: 13px;
+            font-weight: bold;
+            color: #4a5568;
             cursor: pointer;
-            top: 0; left: 0; right: 0; bottom: 0;
-            background-color: #cbd5e0;
-            transition: .3s;
-            border-radius: 24px;
+            border-radius: 4px;
+            transition: all 0.15s ease;
+            text-align: center;
+            min-width: 32px;
+            user-select: none;
         }
 
-        .slider:before {
-            position: absolute;
-            content: "";
-            height: 18px;
-            width: 18px;
-            left: 3px;
-            bottom: 3px;
-            background-color: white;
-            transition: .3s;
-            border-radius: 50%;
-        }
-
-        input:checked + .slider {
-            background-color: var(--primary-color);
-        }
-
-        input:checked + .slider:before {
-            transform: translateX(22px);
-        }
-
-        /* Action Button */
-        .btn-submit {
-            display: block;
-            width: 100%;
+        /* Distinct states for explicitly selected targets */
+        .btn-group input[value="yes"]:checked + label {
             background-color: var(--primary-color);
             color: white;
-            border: none;
-            padding: 14px;
-            font-size: 16px;
-            font-weight: bold;
-            border-radius: 8px;
-            cursor: pointer;
-            margin-top: 20px;
-            transition: background-color 0.2s;
         }
 
-        .btn-submit:hover {
-            background-color: #1a252f;
+        .btn-group input[value="no"]:checked + label {
+            background-color: #718096;
+            color: white;
         }
 
         /* Result Panel Box */
         .result-panel {
-            margin-top: 25px;
+            margin-top: 30px;
             padding: 20px;
             border-radius: 8px;
             background: #edf2f7;
             border-left: 6px solid #cbd5e0;
-            display: none; /* Hidden until submission button is clicked */
+            display: none; /* Hidden strictly until complete validation profile built */
         }
 
         .score-display {
@@ -251,129 +225,186 @@
     </div>
     
     <div class="symptom-group">
-        <!-- 1 Point Row -->
+        <!-- Row 1 (1 Pt) -->
         <div class="symptom-row">
             <div class="symptom-label">
                 <span class="symptom-title">Myalgia OR mild generalized weakness</span>
             </div>
             <span class="badge">1 Pt</span>
-            <label class="switch">
-                <input type="checkbox" id="symp_mild" class="calc-trigger" data-points="1" data-name="Myalgia/Mild Weakness">
-                <span class="slider"></span>
-            </label>
+            <div class="btn-group">
+                <input type="radio" name="symp_mild" id="symp_mild_y" value="yes" class="calc-trigger" data-points="1" data-name="Myalgia/Mild Weakness">
+                <label for="symp_mild_y">YES</label>
+                <input type="radio" name="symp_mild" id="symp_mild_n" value="no" class="calc-trigger" data-points="0" data-name="Myalgia/Mild Weakness">
+                <label for="symp_mild_n">NO</label>
+            </div>
         </div>
 
-        <!-- 2 Point Rows -->
+        <!-- Row 2 (2 Pts) -->
         <div class="symptom-row">
             <div class="symptom-label">
                 <span class="symptom-title">Chest Pain</span>
                 <span class="symptom-desc">Without alternative etiology</span>
             </div>
             <span class="badge">2 Pts</span>
-            <label class="switch">
-                <input type="checkbox" id="symp_chest" class="calc-trigger" data-points="2" data-name="Chest Pain">
-                <span class="slider"></span>
-            </label>
+            <div class="btn-group">
+                <input type="radio" name="symp_chest" id="symp_chest_y" value="yes" class="calc-trigger" data-points="2" data-name="Chest Pain">
+                <label for="symp_chest_y">YES</label>
+                <input type="radio" name="symp_chest" id="symp_chest_n" value="no" class="calc-trigger" data-points="0" data-name="Chest Pain">
+                <label for="symp_chest_n">NO</label>
+            </div>
         </div>
 
+        <!-- Row 3 (2 Pts) -->
         <div class="symptom-row">
             <div class="symptom-label">
                 <span class="symptom-title">Shortness of Breath (SOB)</span>
                 <span class="symptom-desc">Without alternative etiology</span>
             </div>
             <span class="badge">2 Pts</span>
-            <label class="switch">
-                <input type="checkbox" id="symp_sob" class="calc-trigger" data-points="2" data-name="Shortness of Breath">
+            <div class="btn-group">
+                <input type="radio" name="symp_sob" id="symp_sob_y" value="yes" class="calc-trigger" data-points="2" data-name="Shortness of Breath">
                 <span class="slider"></span>
-            </label>
+                <label for="symp_sob_y">YES</label>
+                <input type="radio" name="symp_sob" id="symp_sob_n" value="no" class="calc-trigger" data-points="0" data-name="Shortness of Breath">
+                <label for="symp_sob_n">NO</label>
+            </div>
         </div>
 
-        <!-- 4 Point Rows -->
+        <!-- Row 4 (4 Pts) -->
         <div class="symptom-row">
             <div class="symptom-label">
                 <span class="symptom-title">Severe Generalized Weakness</span>
                 <span class="symptom-desc">Objective proximal muscle weakness (e.g., difficulty rising from chair or lifting arms)</span>
             </div>
             <span class="badge">4 Pts</span>
-            <label class="switch">
-                <input type="checkbox" id="symp_severe_weak" class="calc-trigger" data-points="4" data-name="Severe Weakness">
-                <span class="slider"></span>
-            </label>
+            <div class="btn-group">
+                <input type="radio" name="symp_severe_weak" id="symp_severe_weak_y" value="yes" class="calc-trigger" data-points="4" data-name="Severe Weakness">
+                <label for="symp_severe_weak_y">YES</label>
+                <input type="radio" name="symp_severe_weak" id="symp_severe_weak_n" value="no" class="calc-trigger" data-points="0" data-name="Severe Weakness">
+                <label for="symp_severe_weak_n">NO</label>
+            </div>
         </div>
 
+        <!-- Row 5 (4 Pts) -->
         <div class="symptom-row">
             <div class="symptom-label">
                 <span class="symptom-title">Dysphagia</span>
                 <span class="symptom-desc">Difficulty swallowing</span>
             </div>
             <span class="badge">4 Pts</span>
-            <label class="switch">
-                <input type="checkbox" id="symp_dysphagia" class="calc-trigger" data-points="4" data-name="Dysphagia">
-                <span class="slider"></span>
-            </label>
+            <div class="btn-group">
+                <input type="radio" name="symp_dysphagia" id="symp_dysphagia_y" value="yes" class="calc-trigger" data-points="4" data-name="Dysphagia">
+                <label for="symp_dysphagia_y">YES</label>
+                <input type="radio" name="symp_dysphagia" id="symp_dysphagia_n" value="no" class="calc-trigger" data-points="0" data-name="Dysphagia">
+                <label for="symp_dysphagia_n">NO</label>
+            </div>
         </div>
 
-        <!-- 5 Point Row -->
+        <!-- Row 6 (5 Pts) -->
         <div class="symptom-row">
             <div class="symptom-label">
                 <span class="symptom-title">Electrocardiographic (EKG) Abnormalities</span>
                 <span class="symptom-desc">Any baseline abnormality, new arrhythmia, conduction block, or ST/T changes</span>
             </div>
             <span class="badge">5 Pts</span>
-            <label class="switch">
-                <input type="checkbox" id="symp_ekg" class="calc-trigger" data-points="5" data-name="EKG Abnormalities">
-                <span class="slider"></span>
-            </label>
+            <div class="btn-group">
+                <input type="radio" name="symp_ekg" id="symp_ekg_y" value="yes" class="calc-trigger" data-points="5" data-name="EKG Abnormalities">
+                <label for="symp_ekg_y">YES</label>
+                <input type="radio" name="symp_ekg" id="symp_ekg_n" value="no" class="calc-trigger" data-points="0" data-name="EKG Abnormalities">
+                <label for="symp_ekg_n">NO</label>
+            </div>
         </div>
 
-        <!-- 6 Point Row -->
+        <!-- Row 7 (6 Pts) -->
         <div class="symptom-row">
             <div class="symptom-label">
                 <span class="symptom-title">Ptosis OR Diplopia</span>
                 <span class="symptom-desc">Drooping eyelid or double vision</span>
             </div>
             <span class="badge">6 Pts</span>
-            <label class="switch">
-                <input type="checkbox" id="symp_ocular" class="calc-trigger" data-points="6" data-name="Ocular Symptoms">
-                <span class="slider"></span>
-            </label>
+            <div class="btn-group">
+                <input type="radio" name="symp_ocular" id="symp_ocular_y" value="yes" class="calc-trigger" data-points="6" data-name="Ocular Symptoms">
+                <label for="symp_ocular_y">YES</label>
+                <input type="radio" name="symp_ocular" id="symp_ocular_n" value="no" class="calc-trigger" data-points="0" data-name="Ocular Symptoms">
+                <label for="symp_ocular_n">NO</label>
+            </div>
         </div>
     </div>
-
-    <!-- Submission Action Button -->
-    <button type="button" class="btn-submit" onclick="submitClinicalEvaluation()">Calculate & Log Triage Status</button>
 
     <!-- Output Box Container -->
     <div id="resultBox" class="result-panel">
         <div class="score-display">Total Score: <span id="scoreText">0</span></div>
         <div id="tierText" class="risk-tier">Zero Baseline</div>
-        <div id="protocolText" class="action-protocol">Select checkboxes to calculate patient risk triage status.</div>
+        <div id="protocolText" class="action-protocol">Suggested plan window initialization error.</div>
     </div>
 </div>
 
 <script>
-    function submitClinicalEvaluation() {
+    // Tracker array to avoid duplicate transmissions for identical final profiles
+    let lastLoggedSignature = "";
+
+    // Attach listeners to both Yes and No options across all 7 row names
+    document.querySelectorAll('.calc-trigger').forEach(item => {
+        item.addEventListener('change', handleFormInteraction);
+    });
+
+    function handleFormInteraction(e) {
+        const changedInput = e.target;
+        
+        // Enforcement of Mutual Exclusion between Mild and Severe Weakness rows
+        if (changedInput.checked && changedInput.value === "yes") {
+            if (changedInput.name === "symp_mild") {
+                document.getElementById("symp_severe_weak_n").checked = true;
+            } else if (changedInput.name === "symp_severe_weak") {
+                document.getElementById("symp_mild_n").checked = true;
+            }
+        }
+
+        evaluateRiskProfile();
+    }
+
+    function evaluateRiskProfile() {
+        const uniqueGroupNames = ["symp_mild", "symp_chest", "symp_sob", "symp_severe_weak", "symp_dysphagia", "symp_ekg", "symp_ocular"];
         let totalScore = 0;
         let activeSymptoms = [];
-        
-        // Compile selection profile
-        document.querySelectorAll('.calc-trigger:checked').forEach(checkedItem => {
-            totalScore += parseInt(checkedItem.getAttribute('data-points'));
-            activeSymptoms.push(checkedItem.getAttribute('data-name'));
+        let answersCount = 0;
+        let profileSignatureParts = [];
+
+        // Validate complete row processing profile
+        uniqueGroupNames.forEach(groupName => {
+            const checkedRadio = document.querySelector(`input[name="${groupName}"]:checked`);
+            if (checkedRadio) {
+                answersCount++;
+                const pointValue = parseInt(checkedRadio.getAttribute('data-points'));
+                totalScore += pointValue;
+                
+                profileSignatureParts.push(`${groupName}:${checkedRadio.value}`);
+                if (checkedRadio.value === "yes") {
+                    activeSymptoms.push(checkedRadio.getAttribute('data-name'));
+                }
+            }
         });
 
+        const resultBox = document.getElementById('resultBox');
+
+        // Block UI calculation processing until every single row is actively clicked
+        if (answersCount < uniqueGroupNames.length) {
+            resultBox.style.display = "none";
+            return;
+        }
+
+        // Render targets updates once validation checklist completely passes
         const scoreText = document.getElementById('scoreText');
         const tierText = document.getElementById('tierText');
         const protocolText = document.getElementById('protocolText');
-        const resultBox = document.getElementById('resultBox');
 
         scoreText.innerText = totalScore;
         resultBox.className = "result-panel";
-        resultBox.style.display = "block"; // Display results section post-click
+        resultBox.style.display = "block"; // Make panel instantly visible
 
         let currentTier = "Zero Baseline";
 
-        // Triage mapping evaluation
+        // Triage mapping assignment
         if (totalScore >= 6) {
             resultBox.classList.add('high-risk-border');
             currentTier = "High Risk for Myocarditis, Myasthenia Gravis, or Combined Overlap Syndrome";
@@ -388,21 +419,28 @@
             protocolText.innerText = "Check viral panel to rule out an infectious etiology. Consider checking baseline Troponin and an EKG.";
         } else {
             currentTier = "Zero Baseline";
-            protocolText.innerText = "No current tracking criteria selected. Standard evaluation applies.";
+            protocolText.innerText = "All screening fields set to negative. Standard observation indicated. Monitor for new acute focal trends.";
         }
 
         tierText.innerText = currentTier;
 
-        // Execute unified log transmission
-        executeFinalAnalyticsLog(totalScore, currentTier, activeSymptoms);
+        // Execute Immediate Auto-Logging when profile signature state stabilizes
+        const currentSignature = profileSignatureParts.join("|");
+        if (currentSignature !== lastLoggedSignature) {
+            lastLoggedSignature = currentSignature;
+            executeInstantAnalyticsTransmission(totalScore, currentTier, activeSymptoms);
+        }
     }
 
-    function executeFinalAnalyticsLog(score, tier, symptoms) {
-        console.log(`[SUBMITTED TIER] ${tier} (Score: ${score})`);
+    /**
+     * Instantaneous Transmission Engine
+     */
+    function executeInstantAnalyticsTransmission(score, tier, symptoms) {
+        console.log(`[INSTANT LOGGING] Profile Confirmed - Score: ${score}, Tier: ${tier}`);
 
         if (typeof gtag === 'function') {
-            gtag('event', 'clinical_triage_submission', {
-                'event_category': 'Calculator Deployment',
+            gtag('event', 'clinical_triage_complete_profile', {
+                'event_category': 'Mandatory Screening Metric',
                 'final_score': score,
                 'assigned_risk_tier': tier,
                 'symptoms_count': symptoms.length,

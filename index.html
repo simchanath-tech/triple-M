@@ -14,6 +14,7 @@
         function gtag(){dataLayer.push(arguments);}
         gtag('js', new Date());
 
+        // Configures GA4 and anonymizes IP addresses for privacy compliance
         gtag('config', 'G-6RV9LJ1T4Z', { 'anonymize_ip': true });
     </script>
     <!-- ================================================================= -->
@@ -90,11 +91,11 @@
 
         .block-emphasis {
             display: block;
-            font-size: 16px;
+            font-size: 15px;
             font-weight: 900;
             text-transform: uppercase;
             letter-spacing: 0.5px;
-            margin-bottom: 8px;
+            margin-bottom: 6px;
             color: #e53e3e;
         }
 
@@ -212,7 +213,7 @@
             border-radius: 8px;
             background: #edf2f7;
             border-left: 6px solid #cbd5e0;
-            display: none; /* Hidden until submission */
+            display: none; /* Hidden until submission button is clicked */
         }
 
         .score-display {
@@ -245,8 +246,8 @@
         <h2>Triple-M Syndrome Risk Calculator <span class="beta-tag">Beta Mode</span></h2>
         <p class="header-sub">For individuals with recent initiation of checkpoint inhibitor use in the past 3 months</p>
         <div class="disclaimer-box">
-            <span class="block-emphasis">⚠️ FOR BETA USE AT PRESENT. PLEASE AWAIT DEPARTMENT CONFIRMATION PRIOR TO USE.</span>
-            For Beta SCC use only. This tool is based entirely on expert opinion and is not evidence-based. Please discuss all results with an appropriate medical provider for clinical decisions.
+            <span class="block-emphasis">⚠️ BETA VERSION — PENDING DEPARTMENT APPROVAL</span>
+            <strong>Do not use for active clinical decisions</strong> until formal department confirmation is issued. This tool is currently for Beta SCC use only, based entirely on expert opinion, and is not evidence-based. Please consult the appropriate medical provider to review all results.
         </div>
     </div>
     
@@ -369,7 +370,7 @@
 
         scoreText.innerText = totalScore;
         resultBox.className = "result-panel";
-        resultBox.style.display = "block"; // Make visual panel visible on submit
+        resultBox.style.display = "block"; // Display results section post-click
 
         let currentTier = "Zero Baseline";
 
@@ -393,7 +394,7 @@
 
         tierText.innerText = currentTier;
 
-        // Execute absolute tracking send on deliberate click only
+        // Execute unified log transmission
         executeFinalAnalyticsLog(totalScore, currentTier, activeSymptoms);
     }
 

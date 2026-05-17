@@ -114,7 +114,6 @@
             border-radius: 8px;
         }
 
-        /* Highlight border uniquely for the mandatory row */
         .mandatory-row {
             border: 1.5px solid #cbd5e0;
             background: #f7fafc;
@@ -197,7 +196,7 @@
             border-radius: 8px;
             background: #edf2f7;
             border-left: 6px solid #cbd5e0;
-            display: none; /* Stays hidden until final mandatory question is resolved */
+            display: none;
         }
 
         .score-display {
@@ -249,37 +248,22 @@
             </div>
         </div>
 
-        <!-- Row 2 (2 Pts) - Defaults to NO -->
+        <!-- Row 2 Combined (2 Pts) - Defaults to NO -->
         <div class="symptom-row">
             <div class="symptom-label">
-                <span class="symptom-title">Chest Pain</span>
-                <span class="symptom-desc">Without alternative etiology</span>
+                <span class="symptom-title">Unexplained Chest Pain OR Shortness of Breath (SOB)</span>
+                <span class="symptom-desc">Without clear alternative clinical etiology</span>
             </div>
             <span class="badge">2 Pts</span>
             <div class="btn-group">
-                <input type="radio" name="symp_chest" id="symp_chest_y" value="yes" class="calc-trigger" data-points="2" data-name="Chest Pain">
-                <label for="symp_chest_y">YES</label>
-                <input type="radio" name="symp_chest" id="symp_chest_n" value="no" class="calc-trigger" data-points="0" data-name="Chest Pain" checked>
-                <label for="symp_chest_n">NO</label>
+                <input type="radio" name="symp_cardiopulm" id="symp_cardiopulm_y" value="yes" class="calc-trigger" data-points="2" data-name="Unexplained Cardiopulmonary Symptoms">
+                <label for="symp_cardiopulm_y">YES</label>
+                <input type="radio" name="symp_cardiopulm" id="symp_cardiopulm_n" value="no" class="calc-trigger" data-points="0" data-name="Unexplained Cardiopulmonary Symptoms" checked>
+                <label for="symp_cardiopulm_n">NO</label>
             </div>
         </div>
 
-        <!-- Row 3 (2 Pts) - Defaults to NO -->
-        <div class="symptom-row">
-            <div class="symptom-label">
-                <span class="symptom-title">Shortness of Breath (SOB)</span>
-                <span class="symptom-desc">Without alternative etiology</span>
-            </div>
-            <span class="badge">2 Pts</span>
-            <div class="btn-group">
-                <input type="radio" name="symp_sob" id="symp_sob_y" value="yes" class="calc-trigger" data-points="2" data-name="Shortness of Breath">
-                <label for="symp_sob_y">YES</label>
-                <input type="radio" name="symp_sob" id="symp_sob_n" value="no" class="calc-trigger" data-points="0" data-name="Shortness of Breath" checked>
-                <label for="symp_sob_n">NO</label>
-            </div>
-        </div>
-
-        <!-- Row 4 (4 Pts) - Defaults to NO -->
+        <!-- Row 3 (4 Pts) - Defaults to NO -->
         <div class="symptom-row">
             <div class="symptom-label">
                 <span class="symptom-title">Severe Generalized Weakness</span>
@@ -294,7 +278,7 @@
             </div>
         </div>
 
-        <!-- Row 5 (4 Pts) - Defaults to NO -->
+        <!-- Row 4 (4 Pts) - Defaults to NO -->
         <div class="symptom-row">
             <div class="symptom-label">
                 <span class="symptom-title">Dysphagia</span>
@@ -309,7 +293,7 @@
             </div>
         </div>
 
-        <!-- Row 6 (5 Pts) - Defaults to NO -->
+        <!-- Row 5 (5 Pts) - Defaults to NO -->
         <div class="symptom-row">
             <div class="symptom-label">
                 <span class="symptom-title">Electrocardiographic (EKG) Abnormalities</span>
@@ -324,7 +308,7 @@
             </div>
         </div>
 
-        <!-- Row 7 (6 Pts) - MANDATORY / NO DEFAULT -->
+        <!-- Row 6 (6 Pts) - MANDATORY / NO DEFAULT -->
         <div class="symptom-row mandatory-row">
             <div class="symptom-label">
                 <span class="symptom-title">Ptosis OR Diplopia</span>
@@ -348,11 +332,9 @@
     </div>
 </div>
 
-<script>
-    // Tracks unique data state signatures to avoid duplicate logs
+<script {nonce}>
     let lastLoggedSignature = "";
 
-    // Monitor changes on all forms
     document.querySelectorAll('.calc-trigger').forEach(item => {
         item.addEventListener('change', handleFormInteraction);
     });
@@ -360,7 +342,7 @@
     function handleFormInteraction(e) {
         const changedInput = e.target;
         
-        // Enforce absolute mutual exclusion for the two weakness variations
+        // Enforce mutual exclusion for weakness categories
         if (changedInput.checked && changedInput.value === "yes") {
             if (changedInput.name === "symp_mild") {
                 document.getElementById("symp_severe_weak_n").checked = true;
@@ -373,21 +355,20 @@
     }
 
     function evaluateRiskProfile() {
-        const uniqueGroupNames = ["symp_mild", "symp_chest", "symp_sob", "symp_severe_weak", "symp_dysphagia", "symp_ekg", "symp_ocular"];
+        const uniqueGroupNames = ["symp_mild", "symp_cardiopulm", "symp_severe_weak", "symp_dysphagia", "symp_ekg", "symp_ocular"];
         let totalScore = 0;
         let activeSymptoms = [];
         let profileSignatureParts = [];
 
-        // Verify explicitly if the last mandatory question has been resolved
+        // Check if mandatory final question has been populated
         const mandatoryCheck = document.querySelector('input[name="symp_ocular"]:checked');
         const resultBox = document.getElementById('resultBox');
 
         if (!mandatoryCheck) {
             resultBox.style.display = "none";
-            return; // Exit out silently, leaving output hidden
+            return;
         }
 
-        // Parse system answers profile
         uniqueGroupNames.forEach(groupName => {
             const checkedRadio = document.querySelector(`input[name="${groupName}"]:checked`);
             if (checkedRadio) {
@@ -401,30 +382,33 @@
             }
         });
 
-        // Initialize display components updating processes
         const scoreText = document.getElementById('scoreText');
         const tierText = document.getElementById('tierText');
         const protocolText = document.getElementById('protocolText');
 
         scoreText.innerText = totalScore;
         resultBox.className = "result-panel";
-        resultBox.style.display = "block"; // Instantly show output box
+        resultBox.style.display = "block";
 
         let currentTier = "Zero Baseline";
 
-        // Evaluate point categories allocations
+        // Triage categorization routing
         if (totalScore >= 6) {
             resultBox.classList.add('high-risk-border');
             currentTier = "High Risk for Myocarditis, Myasthenia Gravis, or Combined Overlap Syndrome";
             protocolText.innerText = "Urgent ER evaluation required. The patient exhibits high-weight features or multi-system symptom combinations carrying immediate risk of sudden heart block, fulminant myocarditis, or acute respiratory failure. Direct to the nearest emergency department or arrange immediate inpatient transfer.";
-        } else if (totalScore >= 2 && totalScore <= 5) {
+        } else if (totalScore >= 3 && totalScore <= 5) {
             resultBox.classList.add('int-risk-border');
             currentTier = "Intermediate Risk";
-            protocolText.innerText = "Recommend checking viral panel, EKG, CPK (creatine phosphokinase), and Troponin.";
+            protocolText.innerText = "EKG, Troponin, and CPK recommended.";
+        } else if (totalScore === 2) {
+            resultBox.classList.add('int-risk-border');
+            currentTier = "Intermediate Risk";
+            protocolText.innerText = "EKG recommended. Troponin and CPK considered.";
         } else if (totalScore === 1) {
             resultBox.classList.add('low-risk-border');
             currentTier = "Low Risk";
-            protocolText.innerText = "Check viral panel to rule out an infectious etiology. Consider checking baseline Troponin and an EKG.";
+            protocolText.innerText = "Consider checking an EKG and baseline Troponin.";
         } else {
             currentTier = "Zero Baseline";
             protocolText.innerText = "All screening fields set to negative. Standard observation indicated. Monitor for new acute focal trends.";
@@ -432,11 +416,25 @@
 
         tierText.innerText = currentTier;
 
-        // Auto-log instantly when signature state stabilizes
+        // Auto-log instantly when profile signature state stabilizes
         const currentSignature = profileSignatureParts.join("|");
         if (currentSignature !== lastLoggedSignature) {
             lastLoggedSignature = currentSignature;
             executeInstantAnalyticsTransmission(totalScore, currentTier, activeSymptoms);
+        }
+    }
+
+    function executeInstantAnalyticsTransmission(score, tier, symptoms) {
+        console.log(`[INSTANT LOGGING] Profile Confirmed - Score: ${score}, Tier: ${tier}`);
+
+        if (typeof gtag === 'function') {
+            gtag('event', 'clinical_triage_complete_profile', {
+                'event_category': 'Mandatory Screening Metric',
+                'final_score': score,
+                'assigned_risk_tier': tier,
+                'symptoms_count': symptoms.length,
+                'symptoms_list': symptoms.join('|') || 'None'
+            });
         }
     }
 </script>

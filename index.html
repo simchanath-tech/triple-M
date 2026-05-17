@@ -100,7 +100,7 @@
         }
 
         .symptom-group {
-            margin: 20px 0;
+            margin: 20px 0 25px 0;
         }
 
         .symptom-row {
@@ -189,10 +189,10 @@
             color: white;
         }
 
-        /* Result Panel Box */
+        /* Dynamic Result Output Box */
         .result-panel {
-            margin-top: 30px;
-            padding: 20px;
+            margin-top: 20px;
+            padding: 22px;
             border-radius: 8px;
             background: #edf2f7;
             border-left: 6px solid #cbd5e0;
@@ -216,7 +216,42 @@
             font-weight: 500;
         }
 
-        /* Dynamic Classes */
+        /* Static Score Reference Section at Bottom */
+        .score-reference-matrix {
+            margin-top: 40px;
+            border-top: 2px solid #edf2f7;
+            padding-top: 25px;
+        }
+
+        .matrix-title {
+            font-size: 14px;
+            text-transform: uppercase;
+            letter-spacing: 0.5px;
+            font-weight: bold;
+            color: #718096;
+            margin-bottom: 15px;
+        }
+
+        .matrix-row {
+            display: flex;
+            align-items: flex-start;
+            padding: 10px 12px;
+            border-radius: 6px;
+            margin-bottom: 6px;
+            font-size: 13.5px;
+        }
+
+        .matrix-score-col {
+            font-size: 15px;
+            min-width: 75px;
+            flex-shrink: 0;
+        }
+
+        .ref-low  { background-color: #f1f8e9; color: #1b5e20; border-left: 4px solid var(--low-risk); }
+        .ref-int  { background-color: #fff3e0; color: #e65100; border-left: 4px solid var(--int-risk); }
+        .ref-high { background-color: #ffebee; color: #b71c1c; border-left: 4px solid var(--high-risk); }
+
+        /* Dynamic Border/Background Triage Status Classes */
         .low-risk-border { border-left-color: var(--low-risk); background-color: #f1f8e9; color: #1b5e20; }
         .int-risk-border { border-left-color: var(--int-risk); background-color: #fff3e0; color: #e65100; }
         .high-risk-border { border-left-color: var(--high-risk); background-color: #ffebee; color: #b71c1c; }
@@ -330,6 +365,31 @@
         <div id="tierText" class="risk-tier">Zero Baseline</div>
         <div id="protocolText" class="action-protocol">Suggested plan panel status uninitialized.</div>
     </div>
+
+    <!-- Scoring Reference Matrix Block at the Bottom -->
+    <div class="score-reference-matrix">
+        <div class="matrix-title">Score Logic Reference Guide</div>
+        
+        <div class="matrix-row ref-low">
+            <div class="matrix-score-col">Score <b>1</b></div>
+            <div><b>Low Risk:</b> Consider checking an EKG and baseline Troponin.</div>
+        </div>
+        
+        <div class="matrix-row ref-int">
+            <div class="matrix-score-col">Score <b>2</b></div>
+            <div><b>Intermediate Risk:</b> EKG recommended. Troponin and CPK considered.</div>
+        </div>
+        
+        <div class="matrix-row ref-int">
+            <div class="matrix-score-col">Score <b>3–5</b></div>
+            <div><b>Intermediate Risk:</b> EKG, Troponin, and CPK recommended.</div>
+        </div>
+        
+        <div class="matrix-row ref-high">
+            <div class="matrix-score-col">Score <b>6+</b></div>
+            <div><b>High Risk:</b> Urgent ER evaluation required. The patient exhibits high-weight features or multi-system symptom combinations carrying immediate risk of sudden heart block, fulminant myocarditis, or acute respiratory failure. Direct to nearest ER or arrange immediate inpatient transfer.</div>
+        </div>
+    </div>
 </div>
 
 <script {nonce}>
@@ -360,7 +420,7 @@
         let activeSymptoms = [];
         let profileSignatureParts = [];
 
-        // Check if mandatory final question has been populated
+        // UI stays hidden until the final mandatory field is populated
         const mandatoryCheck = document.querySelector('input[name="symp_ocular"]:checked');
         const resultBox = document.getElementById('resultBox');
 
@@ -392,7 +452,7 @@
 
         let currentTier = "Zero Baseline";
 
-        // Triage categorization routing
+        // Triage mapping evaluation logic paths
         if (totalScore >= 6) {
             resultBox.classList.add('high-risk-border');
             currentTier = "High Risk for Myocarditis, Myasthenia Gravis, or Combined Overlap Syndrome";

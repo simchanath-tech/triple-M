@@ -23,7 +23,8 @@
         :root {
             --primary-color: #2c3e50;
             --low-risk: #2e7d32;
-            --int-risk: #ef6c00;
+            --low-int-risk: #f59e0b;
+            --high-int-risk: #d97706;
             --high-risk: #c62828;
             --bg-color: #f8f9fa;
         }
@@ -243,17 +244,19 @@
 
         .matrix-score-col {
             font-size: 15px;
-            min-width: 75px;
+            min-width: 85px;
             flex-shrink: 0;
         }
 
         .ref-low  { background-color: #f1f8e9; color: #1b5e20; border-left: 4px solid var(--low-risk); }
-        .ref-int  { background-color: #fff3e0; color: #e65100; border-left: 4px solid var(--int-risk); }
+        .ref-low-int { background-color: #fef3c7; color: #92400e; border-left: 4px solid var(--low-int-risk); }
+        .ref-high-int { background-color: #fffbeb; color: #9a3412; border-left: 4px solid var(--high-int-risk); }
         .ref-high { background-color: #ffebee; color: #b71c1c; border-left: 4px solid var(--high-risk); }
 
-        /* Dynamic Border/Background Triage Status Classes */
+        /* Dynamic Triage Border/Background Utility Classes */
         .low-risk-border { border-left-color: var(--low-risk); background-color: #f1f8e9; color: #1b5e20; }
-        .int-risk-border { border-left-color: var(--int-risk); background-color: #fff3e0; color: #e65100; }
+        .low-int-border { border-left-color: var(--low-int-risk); background-color: #fef3c7; color: #92400e; }
+        .high-int-border { border-left-color: var(--high-int-risk); background-color: #fffbeb; color: #9a3412; }
         .high-risk-border { border-left-color: var(--high-risk); background-color: #ffebee; color: #b71c1c; }
     </style>
 </head>
@@ -336,10 +339,10 @@
             </div>
             <span class="badge">5 Pts</span>
             <div class="btn-group">
-                <input type="radio" name="symp_ekg" id="symp_ekg_y" value="yes" class="calc-trigger" data-points="5" data-name="EKG Abnormalities">
-                <label for="symp_ekg_y">YES</label>
-                <input type="radio" name="symp_ekg" id="symp_ekg_n" value="no" class="calc-trigger" data-points="0" data-name="EKG Abnormalities" checked>
-                <label for="symp_ekg_n">NO</label>
+                <input type="radio" name="symp_ekg" id="symg_ekg_y" value="yes" class="calc-trigger" data-points="5" data-name="EKG Abnormalities">
+                <label for="symg_ekg_y">YES</label>
+                <input type="radio" name="symg_ekg" id="symg_ekg_n" value="no" class="calc-trigger" data-points="0" data-name="EKG Abnormalities" checked>
+                <label for="symg_ekg_n">NO</label>
             </div>
         </div>
 
@@ -375,14 +378,14 @@
             <div><b>Low Risk:</b> Consider checking an EKG and baseline Troponin.</div>
         </div>
         
-        <div class="matrix-row ref-int">
+        <div class="matrix-row ref-low-int">
             <div class="matrix-score-col">Score <b>2</b></div>
-            <div><b>Intermediate Risk:</b> EKG recommended. Troponin and CPK considered.</div>
+            <div><b>Low-Intermediate Risk:</b> EKG recommended. Troponin and CPK considered.</div>
         </div>
         
-        <div class="matrix-row ref-int">
+        <div class="matrix-row ref-high-int">
             <div class="matrix-score-col">Score <b>3–5</b></div>
-            <div><b>Intermediate Risk:</b> EKG, Troponin, and CPK recommended.</div>
+            <div><b>High-Intermediate Risk:</b> EKG, Troponin, and CPK recommended.</div>
         </div>
         
         <div class="matrix-row ref-high">
@@ -452,18 +455,18 @@
 
         let currentTier = "Zero Baseline";
 
-        // Triage mapping evaluation logic paths
+        // Structured evaluation routing separating intermediate subclasses
         if (totalScore >= 6) {
             resultBox.classList.add('high-risk-border');
             currentTier = "High Risk for Myocarditis, Myasthenia Gravis, or Combined Overlap Syndrome";
             protocolText.innerText = "Urgent ER evaluation required. The patient exhibits high-weight features or multi-system symptom combinations carrying immediate risk of sudden heart block, fulminant myocarditis, or acute respiratory failure. Direct to the nearest emergency department or arrange immediate inpatient transfer.";
         } else if (totalScore >= 3 && totalScore <= 5) {
-            resultBox.classList.add('int-risk-border');
-            currentTier = "Intermediate Risk";
+            resultBox.classList.add('high-int-border');
+            currentTier = "High-Intermediate Risk";
             protocolText.innerText = "EKG, Troponin, and CPK recommended.";
         } else if (totalScore === 2) {
-            resultBox.classList.add('int-risk-border');
-            currentTier = "Intermediate Risk";
+            resultBox.classList.add('low-int-border');
+            currentTier = "Low-Intermediate Risk";
             protocolText.innerText = "EKG recommended. Troponin and CPK considered.";
         } else if (totalScore === 1) {
             resultBox.classList.add('low-risk-border');
